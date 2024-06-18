@@ -38,7 +38,8 @@ char tecla;
 char mostra[40];
 int senha;
 int contagem;
-int tentativas;
+int tentativas = 0;
+int i;
 char seguranca;
 // Área de declaração de variáveis e protótipos de funções
 //-----------------------------------------------------------------------------------------------------------------------
@@ -72,7 +73,7 @@ void abrir ()    //Programa para abrir o cofre
 void fechar ()   //Programa para fechar o cofre
 {
      hcf_adc_ler (&valor);
-     for (int i = valor; i > 250 ; i = valor)
+     for (int i = valor; i > 400 ; i = valor)
      {
         hcf_adc_ler (&valor);
         rotacionar_DRV (0,10, saidas);
@@ -115,9 +116,7 @@ void app_main(void)
 
     /////////////////////////////////////////////////////////////////////////////////////   Periféricos inicializados
 
- DRV_init(6,7);     
-      lcd595_write(1,1," DIGITE A SENHA");   
-      lcd595_write(2,1,"[] [] [] []"); 
+
     /////////////////////////////////////////////////////////////////////////////////////   Início do ramo principal                    
     while (1)                                                                                                                         
     {                                                                                                                                 
@@ -129,36 +128,41 @@ void app_main(void)
         hcf_adc_ler (&adc);  //Ler o ADC
 
 
-        lcd595_write(2,0,mostra);    
-        if (tecla >='0'&& tecla <= '9')   // Fazer os números para aparecer no display    _ _ _ _ 
+        if (tecla >='0'&& tecla <= '9')   // Fazer os números aparecer no display    _ _ _ _ 
         {  
-          controle = controle + 1;
-          num1 =  num1 * 10 + tecla - '0';   
+          controle = controle + 1;   // Passar para o número do lado
+          num1 =  num1 * 10 + tecla - '0';   // Passar para o número do lado
         }  
 
+       if ( controle==0)  //Digitar a senha
+        {              
+          lcd595_write(1,1," DIGITE A SENHA");   ///Aparecer no display 
+          lcd595_write(2,0,"[ ] [ ] [ ] [ ]");    //Aparecer no display 
+          vTaskDelay(50/ portTICK_PERIOD_MS);   //Tempo de Delay
+        }
         if ( controle==1)  //Digitar a senha
         {  
-          lcd595_write(1,1," DIGITE A SENHA");   
-          lcd595_write(2,0,"[] [] [] [x]");    
-          vTaskDelay(50/ portTICK_PERIOD_MS);   
+          lcd595_write(1,1," DIGITE A SENHA");  ///Aparecer no display  
+          lcd595_write(2,0,"[x] [ ] [ ] [ ]");    ///Aparecer no display 
+          vTaskDelay(50/ portTICK_PERIOD_MS);   //Tempo de Delay
         }
 
             if ( controle==2) 
         {
-          lcd595_write(2,0,"[] [] [x] [x]");   
-          vTaskDelay(50/ portTICK_PERIOD_MS);   
+          lcd595_write(2,0,"[x] [x] [ ] [ ]");   ///Aparecer no display 
+          vTaskDelay(50/ portTICK_PERIOD_MS);   //Tempo de Delay
         }
 
             if ( controle==3)
         {
-          lcd595_write(2,0,"[] [x] [x] [x]");
-          vTaskDelay(50/ portTICK_PERIOD_MS);   
+          lcd595_write(2,0,"[x] [x] [x] [ ]"); ///Aparecer no display 
+          vTaskDelay(50/ portTICK_PERIOD_MS);   //Tempo de Delay
         }
 
             if ( controle==4)
         {   
-          lcd595_write(2,0,"[x] [x] [x] [x]");    
-          vTaskDelay(50/ portTICK_PERIOD_MS);   
+          lcd595_write(2,0,"[x] [x] [x] [x]");    ///Aparecer no display 
+          vTaskDelay(50/ portTICK_PERIOD_MS);   //Tempo de Delay
         }
           
 
@@ -167,55 +171,93 @@ void app_main(void)
            if(num1 == 1234)
       
           { 
-            lcd595_write(1,1, "SENHA CORRETA" );   
-            lcd595_clear(); 
-            abrir ();
-            lcd595_clear(); 
-            lcd595_write (2, 0, "Fechando em 10s");
+            lcd595_write(1,1, "SENHA CORRETA" );   ///Aparecer no display 
+            lcd595_clear();   //Limpar para não ter sobreposição
+            abrir (); //Abrir cofre
+            lcd595_clear(); //Limpar para não ter sobreposição
+            lcd595_write (2, 0, "Fechando em 10s");///Aparecer no display 
             vTaskDelay(1000/ portTICK_PERIOD_MS);   
-            lcd595_clear(); 
-            lcd595_write (2, 0, "Fechando em 9s");
+            lcd595_clear(); //Limpar para não ter sobreposição
+            lcd595_write (2, 0, "Fechando em 9s");///Aparecer no display 
             vTaskDelay(1000/ portTICK_PERIOD_MS);   
-            lcd595_clear(); 
-            lcd595_write (2, 0, "Fechando em 8s");
+            lcd595_clear(); //Limpar para não ter sobreposição
+            lcd595_write (2, 0, "Fechando em 8s");///Aparecer no display 
             vTaskDelay(1000/ portTICK_PERIOD_MS);   
-            lcd595_clear(); 
-            lcd595_write (2, 0, "Fechando em 7s");
+            lcd595_clear(); //Limpar para não ter sobreposição
+            lcd595_write (2, 0, "Fechando em 7s");///Aparecer no display 
             vTaskDelay(1000/ portTICK_PERIOD_MS); 
-            lcd595_clear();   
-            lcd595_write (2, 0, "Fechando em 6s");
+            lcd595_clear();   //Limpar para não ter sobreposição
+            lcd595_write (2, 0, "Fechando em 6s");///Aparecer no display 
             vTaskDelay(1000/ portTICK_PERIOD_MS); 
-            lcd595_clear();  
-            lcd595_write (2, 0, "Fechando em 5s");
+            lcd595_clear();  //Limpar para não ter sobreposição
+            lcd595_write (2, 0, "Fechando em 5s");///Aparecer no display 
             vTaskDelay(1000/ portTICK_PERIOD_MS);  
-            lcd595_clear(); 
-            lcd595_write (2, 0, "Fechando em 4s");
+            lcd595_clear(); //Limpar para não ter sobreposição
+            lcd595_write (2, 0, "Fechando em 4s");///Aparecer no display 
             vTaskDelay(1000/ portTICK_PERIOD_MS);  
-            lcd595_clear(); 
-            lcd595_write (2, 0, "Fechando em 3s");
+            lcd595_clear(); //Limpar para não ter sobreposição
+            lcd595_write (2, 0, "Fechando em 3s");///Aparecer no display 
             vTaskDelay(1000/ portTICK_PERIOD_MS);  
-            lcd595_clear(); 
-            lcd595_write (2, 0, "Fechando em 2s");
+            lcd595_clear(); //Limpar para não ter sobreposição
+            lcd595_write (2, 0, "Fechando em 2s");///Aparecer no display 
             vTaskDelay(1000/ portTICK_PERIOD_MS); 
-            lcd595_clear(); 
-            lcd595_write (2, 0, "Fechando em 1s");
+            lcd595_clear(); //Limpar para não ter sobreposição
+            lcd595_write (2, 0, "Fechando em 1s");///Aparecer no display 
             vTaskDelay(1000/ portTICK_PERIOD_MS); 
-            lcd595_clear(); 
-            lcd595_write (1, 0, "Fechando Cofre");
-            fechar();
-            lcd595_clear();  
-            num1=0; 
-            controle=0; 
+            lcd595_clear(); //Limpar para não ter sobreposição
+            lcd595_write (1, 0, "Fechando Cofre");///Aparecer no display 
+            fechar();   //Fechar motor 
+            lcd595_clear();  //Limpar para não ter sobreposição
+            num1=0;  //Retomar ao zero
+            controle=0; //Retomar ao zero
           }
 
+
           else  //Senha errada 
-        { lcd595_clear(); 
-          lcd595_write(1,1, "ACESSO NEGADO" );  
-          lcd595_write(2,0, "TENTE NOVAMENTE" );    
-          vTaskDelay(1000/ portTICK_PERIOD_MS);   
-          lcd595_clear(); 
-          num1=0;
-          controle=0;
+        { 
+          lcd595_clear(); //Limpar para não ter sobreposição
+          lcd595_write(1,1, "ACESSO NEGADO" );  ///Aparecer no display 
+          lcd595_write(2,0, "TENTE NOVAMENTE" );   ///Aparecer no display  
+          vTaskDelay(1000/ portTICK_PERIOD_MS);   //Tempo de Delay
+          lcd595_clear(); //Limpar para não ter sobreposição
+          num1=0;   //Retomar ao zero
+          controle=0;  //Retomar ao zero
+          tentativas = tentativas + 1; //Ir para a proxima tentaiva 
+
+          if (tentativas == 1)
+          {
+          lcd595_write(1,0, "RESTAM 2 TENT" );  ///Aparecer no display 
+          lcd595_write(2,0, "TENTE NOVAMENTE" );  ///Aparecer no display 
+          vTaskDelay(1000/ portTICK_PERIOD_MS);   //Tempo de Delay
+          lcd595_clear();   //Limpar para não ter sobreposição
+          }
+
+              if (tentativas == 2)
+          {
+          lcd595_write(1,0, "RESTAM 1 TENT" );  ///Aparecer no display 
+          lcd595_write(2,0, "TENTE NOVAMENTE" );  ///Aparecer no display 
+          vTaskDelay(1000/ portTICK_PERIOD_MS);   //Tempo de Delay
+          lcd595_clear();   //Limpar para não ter sobreposição
+          }
+
+              if (tentativas == 3)
+          {
+          lcd595_write(1,0, "ACESSO BLOQUEADO" );  ///Aparecer no display 
+          lcd595_write(2,0, "AGUARDE 30 SEGS" );  ///Aparecer no display 
+
+            for (int i =30; i >0; i-- ) //Repetir uma ação
+            {
+              sprintf (mostra,"AGUARDE %d SEGS",i ); //Mostrar no display
+              lcd595_write(2,0, mostra);  //Mostrar no display
+              vTaskDelay(1000/ portTICK_PERIOD_MS);   //Tempo de Delay
+              
+            }
+          num1=0;  //Retomar ao zero
+          controle=0; //Retomar ao zero
+          lcd595_clear();   //Limpar para não ter sobreposição
+            
+          }
+           lcd595_clear();   //Limpar para não ter sobreposição
         }  
         }
       
